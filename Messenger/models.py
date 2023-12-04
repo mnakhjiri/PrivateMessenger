@@ -8,6 +8,7 @@ class Message(models.Model):
     recipient = models.ForeignKey(account_models.UserInfo, on_delete=models.CASCADE, related_name="messages_received")
     expires_at = models.DateTimeField(null=True, blank=True)
     is_read = models.BooleanField(default=False)
+    txt = models.TextField()
 
     @staticmethod
     def get_inbox(user):

@@ -103,7 +103,8 @@ def handle_message(message):
                         "شما پیام جدید دارید." + "\n" + "پیام از کاربر " + f'`{str(message_item.sender.id)}`' + " : "
                 bot.send_message(message.chat.id, first_message_txt,
                                  parse_mode='Markdown')
-                bot.forward_message(message.chat.id, message_item.sender.chat_id, message_item.message_id, )
+                # bot.forward_message(message.chat.id, message_item.sender.chat_id, message_item.message_id, )
+                bot.send_message(message.chat.id, message_item.txt)
                 message_item.is_read = True
                 message_item.save(update_fields=['is_read'])
         menu(message)
@@ -170,7 +171,8 @@ def message_handler(message):
 
 
 def send_message_to_user(message, recipient, sender):
-    message_item = Message.objects.create(message_id=message.message_id, sender=sender, recipient=recipient)
+    message_item = Message.objects.create(message_id=message.message_id, sender=sender, recipient=recipient,
+                                          txt=message.text)
     if not recipient.silent_notifications:
         if sender.superuser:
             first_message_txt = "شما پیام جدید از ادمین دارید:" + "\n"
@@ -178,7 +180,8 @@ def send_message_to_user(message, recipient, sender):
             first_message_txt = \
                 "شما پیام جدید دارید." + "\n" + "پیام از کاربر " + f'`{str(sender.id)}`' + " : "
         bot.send_message(recipient.chat_id, first_message_txt, parse_mode='Markdown')
-        bot.forward_message(recipient.chat_id, sender.chat_id, message.message_id)
+        bot.send_message(recipient.chat_id, message_item.txt)
+        # bot.forward_message(recipient.chat_id, sender.chat_id, message.message_id)
         message_item.is_read = True
         message_item.save(update_fields=['is_read'])
 
